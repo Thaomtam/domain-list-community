@@ -1,4 +1,4 @@
-name: Build geosite.dat
+name: backup geosite.dat
 on:
   workflow_dispatch:
     inputs:
