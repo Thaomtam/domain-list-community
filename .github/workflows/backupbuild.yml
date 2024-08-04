@@ -1,14 +1,10 @@
 name: backup geosite.dat
 on:
-  workflow_dispatch:
-    inputs:
-      PRE_RELEASE:
-        description: "Set as pre-release"
-        required: false
-        type: boolean
-        default: false
-  schedule:
-    - cron: "0 1 * * *"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**/README.md"
 jobs:
   build: 
     name: Build
