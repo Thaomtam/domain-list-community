@@ -49,20 +49,20 @@ jobs:
           curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json | jq -r '.[] | select(.type == "DOMAIN") | .value' > thaomtam.txt
         shell: bash
 		
-	  - name: Download DANPOLLOCK_REJECT_URL
+	  - name: Download DANPOLLOCK
         run: |
-          curl -sSL https://someonewhocares.org/hosts/hosts | perl -ne '/^127\.0\.0\.1\s([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+){1,64})/ && print "$1\n"' | sed '1d' >> DANPOLLOCK_REJECT_URL.txt
+          curl -sSL https://someonewhocares.org/hosts/hosts | perl -ne '/^127\.0\.0\.1\s([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+){1,64})/ && print "$1\n"' | sed '1d' >> DANPOLLOCK.txt
         shell: bash	
 		
-	  - name: Download PETERLOWE_REJECT_URL
+	  - name: Download PETERLOWE
         run: |
-          curl -sSL https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext | perl -ne '/^127\.0\.0\.1\s([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+){1,64})$/ && print "$1\n"' > PETERLOWE_REJECT_URL.txt
+          curl -sSL https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext | perl -ne '/^127\.0\.0\.1\s([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+){1,64})$/ && print "$1\n"' > PETERLOWE.txt
         shell: bash	
 
       - name: Merge and filter data
         run: |
           # Combine all data into a single file
-          cat easylist.txt adguard_dns.txt thaomtam.txt DANPOLLOCK_REJECT_URL.txt PETERLOWE_REJECT_URL.txt | sort | uniq > merged.txt
+          cat easylist.txt adguard_dns.txt thaomtam.txt DANPOLLOCK.txt PETERLOWE.txt | sort | uniq > merged.txt
 
           # Final filtering to remove duplicates
           sort merged.txt | uniq > final_data.txt
