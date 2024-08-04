@@ -17,13 +17,11 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4
-        with:
-          path: code
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: code/go.mod
+          go-version: 1.19 # Replace with your Go version if needed
 
       - name: Set variables
         run: |
@@ -38,26 +36,19 @@ jobs:
         run: |
           cd code || exit 1
           
-          # Create data directory
           mkdir -p data
           
-          # Download domain list from GitHub
           curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
           
-          # Merge all lists into category-ads-all and remove duplicates
-          cat data/tenmien.txt \
-            | sort | uniq > data/category-ads-all
+          cat data/tenmien.txt | sort | uniq > data/category-ads-all
           
-          # Run go script to build geosite.dat
-          go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
+          go run ./build.go --outputdir=../ --exportlists=category-ads-all --datapath=data
           
-          # Cleanup and finalize
           cd ../ && rm -rf code
           mv dlc.dat geosite.dat
 
       - name: Generate geosite.dat sha256 hash
-        run: |
-          sha256sum geosite.dat > geosite.dat.sha256sum
+        run: sha256sum geosite.dat > geosite.dat.sha256sum
 
       - name: Generate Zip
         run: |
@@ -74,7 +65,7 @@ jobs:
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release
+          git checkout -b release || git checkout release
           git add *.txt *.sha256sum geosite.dat geosite.dat.zip geosite.dat.xz
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
