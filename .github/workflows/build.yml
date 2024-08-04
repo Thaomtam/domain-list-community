@@ -1,14 +1,10 @@
-name: Build geosite.dat
+name: backup geosite.dat
 on:
-  workflow_dispatch:
-    inputs:
-      PRE_RELEASE:
-        description: "Set as pre-release"
-        required: false
-        type: boolean
-        default: false
-  schedule:
-    - cron: "0 1 * * *"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**/README.md"
 jobs:
   build: 
     name: Build
@@ -17,11 +13,13 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4
+        with:
+          path: code
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.19 # Replace with your Go version if needed
+          go-version-file: code/go.mod
 
       - name: Set variables
         run: |
@@ -33,22 +31,18 @@ jobs:
         shell: bash
 
       - name: Build geosite.dat file
-        run: |
-          cd code || exit 1
-          
-          mkdir -p data
-          
-          curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
-          
-          cat data/tenmien.txt | sort | uniq > data/category-ads-all
-          
-          go run ./build.go --outputdir=../ --exportlists=category-ads-all --datapath=data
-          
-          cd ../ && rm -rf code
-          mv dlc.dat geosite.dat
+		  run: |
+			cd code || exit 1
+			mkdir -p data
+			curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
+			cat data/tenmien.txt | sort | uniq > data/category-ads-all
+			go run ./build.go --outputdir=../ --exportlists=category-ads-all --datapath=data
+			cd ../ && rm -rf code
+			mv dlc.dat geosite.dat
 
       - name: Generate geosite.dat sha256 hash
-        run: sha256sum geosite.dat > geosite.dat.sha256sum
+        run: |
+          sha256sum geosite.dat > geosite.dat.sha256sum
 
       - name: Generate Zip
         run: |
@@ -65,7 +59,7 @@ jobs:
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release || git checkout release
+          git checkout -b release
           git add *.txt *.sha256sum geosite.dat geosite.dat.zip geosite.dat.xz
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
