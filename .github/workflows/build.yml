@@ -57,9 +57,9 @@ jobs:
           curl -sSL https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext \
             | perl -ne '/^127\.0\.0\.1\s([-_0-9a-zA-Z]+(\.[-_0-9a-zA-Z]+){1,64})$/ && print "$1\n"' > data/PETERLOWE.txt
           
-          # Merge all lists, including the domain list, and remove duplicates
+          # Merge all lists into category-ads-all and remove duplicates
           cat data/tenmien.txt data/easylist.txt data/adguard_dns.txt data/DANPOLLOCK.txt data/PETERLOWE.txt \
-            | sort | uniq > data/combined_adblock.txt
+            | sort | uniq > data/category-ads-all
           
           # Run go script to build geosite.dat
           go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
