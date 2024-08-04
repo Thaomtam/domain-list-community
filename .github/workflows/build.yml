@@ -1,12 +1,16 @@
 name: Build dlc.dat
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - "**/README.md"
+  workflow_dispatch:
+    inputs:
+      PRE_RELEASE:
+        description: "Set as pre-release"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 1 * * *"
 jobs:
-  build:
+  build: 
     name: Build
     runs-on: ubuntu-latest
 
@@ -30,7 +34,10 @@ jobs:
       - name: Build dlc.dat file
         run: |
           cd code || exit 1
-          go run ./ --outputdir=../ --exportlists=category-ads-all,tld-cn,cn,tld-\!cn,geolocation-\!cn,apple,icloud
+          curl -o tenmien.json https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json
+          mkdir -p data
+          mv tenmien.json data/tenmien.json
+          go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
           cd ../ && rm -rf code
 
       - name: Generate dlc.dat sha256 hash
