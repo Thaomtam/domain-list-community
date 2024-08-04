@@ -1,10 +1,14 @@
-name: backup geosite.dat
+name: Build geosite.dat
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - "**/README.md"
+  workflow_dispatch:
+    inputs:
+      PRE_RELEASE:
+        description: "Set as pre-release"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 1 * * *"
 jobs:
   build: 
     name: Build
@@ -31,14 +35,14 @@ jobs:
         shell: bash
 
       - name: Build geosite.dat file
-		  run: |
-			cd code || exit 1
-			mkdir -p data
-			curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
-			cat data/tenmien.txt | sort | uniq > data/category-ads-all
-			go run ./build.go --outputdir=../ --exportlists=category-ads-all --datapath=data
-			cd ../ && rm -rf code
-			mv dlc.dat geosite.dat
+	  run: |
+	    cd code || exit 1
+	    mkdir -p data
+	    curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
+	    cat data/tenmien.txt | sort | uniq > data/category-ads-all
+	    go run ./build.go --outputdir=../ --exportlists=category-ads-all --datapath=data
+	    cd ../ && rm -rf code
+	    mv dlc.dat geosite.dat
 
       - name: Generate geosite.dat sha256 hash
         run: |
