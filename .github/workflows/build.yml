@@ -27,8 +27,9 @@ jobs:
 
       - name: Set variables
         run: |
-          RELEASE_NAME="$(date '+%d/%m/%Y %H:%M')"
-          TAG_NAME="$(date '+%Y%m%d%H%M')"
+          TZ="Asia/Ho_Chi_Minh"
+          RELEASE_NAME=$(TZ=$TZ date '+%d/%m/%Y %H:%M')
+          TAG_NAME=$(TZ=$TZ date '+%Y%m%d%H%M')
           echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
         shell: bash
