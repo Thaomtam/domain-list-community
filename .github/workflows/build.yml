@@ -38,6 +38,9 @@ jobs:
         run: |
           cd code || exit 1
           
+          # Create data directory
+          mkdir -p data
+          
           # Download domain list from GitHub
           curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
           
