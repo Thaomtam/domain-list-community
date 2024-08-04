@@ -39,6 +39,7 @@ jobs:
           mv tenmien.json data/tenmien.json
           go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
           cd ../ && rm -rf code
+          mv dlc.dat geosite.dat
 
       - name: Generate geosite.dat sha256 hash
         run: |
