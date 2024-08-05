@@ -1,6 +1,6 @@
 name: Build geosite.dat
 on:
-  workflow_dispatch: # thoitiet
+  workflow_dispatch: # thời tiết
   schedule:
     - cron: "0 3 * * *"  # 03:00 AM UTC = 10:00 AM Vietnam Time
 
@@ -63,13 +63,17 @@ jobs:
           xz -z -9 -k geosite.dat
           sha256sum geosite.dat.xz > geosite.dat.xz.sha256sum
 
+      - name: Create release notes file
+        run: |
+          echo -e "👉 Github: thaomtam\n👉 Facebook: thời tiết\n👉 Telegram: t.me/ktandroidreview\n\n😍😍 Bộ geositeVN cho người Việt" > release-notes.txt
+
       - name: Git push assets to "release" branch
         run: |
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b release
-          git add *.txt *.sha256sum geosite.dat geosite.dat.zip geosite.dat.xz
+          git add *.txt *.sha256sum geosite.dat geosite.dat.zip geosite.dat.xz release-notes.txt
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release
@@ -80,7 +84,7 @@ jobs:
             --generate-notes \
             --latest \
             --title "Build bởi Thời Tiết - ${{ env.RELEASE_NAME }}" \
-            --notes "👉 Github: thaomtam\n👉 Facebook: thời tiết\n👉 Telegram: t.me/ktandroidreview\n\n😍😍 Bộ geositeVN cho người Việt" \
+            --notes-file release-notes.txt \
             ./geosite.dat ./geosite.dat.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
