@@ -39,8 +39,8 @@ jobs:
           # Download domain list from GitHub and save to tenmien.txt
           curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
           
-          # Copy tenmien.txt to category-ads-all
-          cp data/tenmien.txt data/category-ads-all
+          # Remove duplicate domains and empty lines, then save to category-ads-all
+          sort -u data/tenmien.txt | sed '/^$/d' > data/category-ads-all
           
           # Run go script to build geosite.dat
           go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
