@@ -75,7 +75,12 @@ jobs:
           git push -f -u origin release
 
       - name: Release and upload assets
-        run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title "Build bởi Thời Tiết - ${{ env.RELEASE_NAME }}" ./geosite.dat ./geosite.dat.*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    gh release create ${{ env.TAG_NAME }} \
+      --generate-notes \
+      --latest \
+      --title "Build bởi Thời Tiết - ${{ env.RELEASE_NAME }}" \
+      --notes "👉 Github: thaomtam\n👉 Facebook: thời tiết\n👉 Telegram: t.me/ktandroidreview\n\n😍😍 Bộ geositeVN cho người Việt" \
+      ./geosite.dat ./geosite.dat.*
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
