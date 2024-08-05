@@ -1,6 +1,6 @@
 name: Build geosite.dat
 on:
-  workflow_dispatch: # Cho phép chạy thủ công nếu cần
+  workflow_dispatch: # thoitiet
   schedule:
     - cron: "0 3 * * *"  # 03:00 AM UTC = 10:00 AM Vietnam Time
 
