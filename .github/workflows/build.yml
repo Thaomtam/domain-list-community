@@ -1,12 +1,9 @@
 name: Build geosite.dat
 on:
-  workflow_dispatch:
-    inputs:
-      PRE_RELEASE:
-        description: "Set as pre-release"
-        required: false
-        type: boolean
-        default: false
+  workflow_dispatch: # Cho phép chạy thủ công nếu cần
+  schedule:
+    - cron: "0 3 * * *"  # 03:00 AM UTC = 10:00 AM Vietnam Time
+
 jobs:
   build: 
     name: Build
