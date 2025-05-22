@@ -38,9 +38,7 @@ jobs:
           
           # Remove duplicate domains and empty lines, then save to category-ads-all
           curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json| sort -u | sed '/^$/d' > data/category-ads-all
-		  curl -sSL https://raw.githubusercontent.com/bigdargon/hostsVN/refs/heads/master/extensions/adult/domain.txt| sort -u | sed '/^$/d' > data/porn
-		  
-		  
+	  curl -sSL https://raw.githubusercontent.com/bigdargon/hostsVN/refs/heads/master/extensions/adult/domain.txt| sort -u | sed '/^$/d' > data/porn
           
           # Run go script to build geosite.dat
           go run ./ --outputdir=../ --exportlists=category-ads-all,porn --datapath=data
