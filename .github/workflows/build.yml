@@ -34,16 +34,16 @@ jobs:
           cd code || exit 1
           
           # Create data directory
-          mkdir -p data
-          
-          # Download domain list from GitHub and save to tenmien.txt
-          curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json > data/tenmien.txt
+          mkdir -p data         
           
           # Remove duplicate domains and empty lines, then save to category-ads-all
-          sort -u data/tenmien.txt | sed '/^$/d' > data/category-ads-all
+          curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json| sort -u | sed '/^$/d' > data/category-ads-all
+		  curl -sSL https://raw.githubusercontent.com/bigdargon/hostsVN/refs/heads/master/extensions/adult/domain.txt| sort -u | sed '/^$/d' > data/porn
+		  
+		  
           
           # Run go script to build geosite.dat
-          go run ./ --outputdir=../ --exportlists=category-ads-all --datapath=data
+          go run ./ --outputdir=../ --exportlists=category-ads-all,porn --datapath=data
           
           # Cleanup and finalize
           cd ../ && rm -rf code
