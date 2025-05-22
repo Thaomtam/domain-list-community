@@ -1,11 +1,12 @@
 name: Build geosite.dat
+
 on:
-  workflow_dispatch: # thời tiết
+  workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"  # 03:00 AM UTC = 10:00 AM Vietnam Time
+    - cron: "0 3 * * *" # 03:00 AM UTC = 10:00 AM Vietnam Time
 
 jobs:
-  build: 
+  build:
     name: Build
     runs-on: ubuntu-latest
 
@@ -32,18 +33,10 @@ jobs:
       - name: Build geosite.dat file
         run: |
           cd code || exit 1
-          
-          # Create data directory
-          mkdir -p data         
-          
-          # Remove duplicate domains and empty lines, then save to category-ads-all
-          curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json| sort -u | sed '/^$/d' > data/category-ads-all
-	  curl -sSL https://raw.githubusercontent.com/bigdargon/hostsVN/refs/heads/master/extensions/adult/domain.txt| sort -u | sed '/^$/d' > data/porn
-          
-          # Run go script to build geosite.dat
+          mkdir -p data
+          curl -sSL https://raw.githubusercontent.com/Thaomtam/Geosite-vn/rule-set/tenmien.json | sort -u | sed '/^$/d' > data/category-ads-all
+          curl -sSL https://raw.githubusercontent.com/bigdargon/hostsVN/refs/heads/master/extensions/adult/domain.txt | sort -u | sed '/^$/d' > data/porn
           go run ./ --outputdir=../ --exportlists=category-ads-all,porn --datapath=data
-          
-          # Cleanup and finalize
           cd ../ && rm -rf code
           mv dlc.dat geosite.dat
 
